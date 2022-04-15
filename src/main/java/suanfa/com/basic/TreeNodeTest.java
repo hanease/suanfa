@@ -144,4 +144,55 @@ public class TreeNodeTest
         return root;
     }
 
+    //二叉树的中序遍历
+    //给定一个二叉树的根节点 root ，返回 它的 中序 遍历 。
+    //输入：root = [1,null,2,3]
+    //输出：[1,3,2]
+
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        inorder(root, res);
+        return res;
+    }
+
+    public void inorder(TreeNode root, List<Integer> res) {
+        //递归的终止条件
+        if (root == null)
+            return;
+        //递归遍历左子节点
+        inorder(root.left, res);
+        //访问当前节点
+        res.add(root.val);
+        //递归遍历右子节点
+        inorder(root.right, res);
+    }
+
+    //二叉搜索树中第K小的元素
+    //给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 个最小元素（从 1 开始计数）。
+    //输入：root = [3,1,4,null,2], k = 1
+    //输出：1
+    public int kthSmallest(TreeNode root, int k) {
+        //先统计左子节点的个数
+        int leftCount = countNodes(root.left);
+        if (leftCount >= k) {
+            //如果左子节点的个数大于等于k，说明我们要找的元素就在左子节点中，
+            //直接在左子节点中查找即可
+            return kthSmallest(root.left, k);
+        } else if (leftCount + 1 == k) {
+            //如果左子节点的个数加当前节点（1）正好等于k，说明根节点
+            //就是要找到元素
+            return root.val;
+        } else {
+            //否则要找的元素在右子节点中，到右子节点中查找
+            return kthSmallest(root.right, k - 1 - leftCount);
+        }
+    }
+
+    //统计节点个数
+    public int countNodes(TreeNode n) {
+        if (n == null)
+            return 0;
+        return 1 + countNodes(n.left) + countNodes(n.right);
+    }
+
 }

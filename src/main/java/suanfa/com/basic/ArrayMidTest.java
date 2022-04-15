@@ -3,9 +3,6 @@ package suanfa.com.basic;
 import java.util.*;
 
 public class ArrayMidTest {
-    //三数之和
-    //给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。
-    //
 
     public static void main(String[] args) {
         double[] myList = {1.9, 2.9, 3.4, 3.5};
@@ -18,7 +15,6 @@ public class ArrayMidTest {
 
     //三数之和
     public static List<List<Integer>> threeSum(int[] nums) {
-
         //先对数组进行排序
         Arrays.sort(nums);
         List<List<Integer>> res = new ArrayList<>();
@@ -99,13 +95,11 @@ public class ArrayMidTest {
         }
         return B;
     }
+
     //字母异位词分组
-    //给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。
-    //
     //字母异位词 是由重新排列源单词的字母得到的一个新单词，所有源单词中的字母通常恰好只用一次。
     //输入: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
     //输出: [["bat"],["nat","tan"],["ate","eat","tea"]]
-
     public List<List<String>> groupAnagrams(String[] strs) {
         List<List<String>> ans = new ArrayList<>();
         int n = strs.length;
@@ -126,6 +120,26 @@ public class ArrayMidTest {
         }
         return ans;
     }
+
+    public List<List<String>> groupAnagrams2(String[] strs) {
+        if(strs == null || strs.length == 0)
+            return new ArrayList<>();
+        Map<String, List<String>> map = new HashMap<>();
+        for(String s : strs) {
+            // 将字符串转化为字符数组后排序
+            char[] ch = s.toCharArray();
+            Arrays.sort(ch);
+            // 将排序后的字符串作为key
+            String strKey = String.valueOf(ch);
+            // 如果map中不存在排序后的字符串的key，创建一个list
+            if(!map.containsKey(strKey))
+                map.put(strKey, new ArrayList<>());
+            // 将原字符串添加到key对应的列表中
+            map.get(strKey).add(s);
+        }
+        return new ArrayList<>(map.values());
+    }
+
     //无重复字符的最长子串
     //给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
     //输入: s = "abcabcbb"

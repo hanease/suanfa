@@ -119,81 +119,6 @@ public static int maxProduct(String[] words) {
 
     }
 
-    //最长回文子串
-    //给你一个字符串 s，找到 s 中最长的回文子串。
-    public static String longestPalindrome(String s) {
-        //边界条件判断
-        if (s.length() < 2)
-            return s;
-        //start表示最长回文串开始的位置，
-        //maxLen表示最长回文串的长度
-        int start = 0, maxLen = 1;
-        int length = s.length();
-        boolean[][] dp = new boolean[length][length];
-        for (int right = 1; right < length; right++) {
-            for (int left = 0; left < right; left++) {
-                //如果两种字符不相同，肯定不能构成回文子串
-                if (s.charAt(left) != s.charAt(right))
-                    continue;
-
-                //下面是s.charAt(left)和s.charAt(right)两个
-                //字符相同情况下的判断
-                //如果只有一个字符，肯定是回文子串
-                if (right == left) {
-                    dp[left][right] = true;
-                } else if (right - left <= 2) {
-                    //类似于"aa"和"aba"，也是回文子串
-                    dp[left][right] = true;
-                } else {
-                    //类似于"a******a"，要判断他是否是回文子串，只需要
-                    //判断"******"是否是回文子串即可
-                    dp[left][right] = dp[left + 1][right - 1];
-                }
-                //如果字符串从left到right是回文子串，只需要保存最长的即可
-                if (dp[left][right] && right - left + 1 > maxLen) {
-                    maxLen = right - left + 1;
-                    start = left;
-                }
-            }
-        }
-        //截取最长的回文子串
-        return s.substring(start, start + maxLen);
-    }
-
-    //字符串转换整数 (atoi)
-    //请你来实现一个 myAtoi(string s) 函数，使其能将字符串转换成一个 32 位有符号整数（类似 C/C++ 中的 atoi 函数）。
-    //
-    //函数 myAtoi(string s) 的算法如下：
-    // 输入：s = "4193 with words"
-    //输出：4193
-    public int myAtoi(String str) {
-        str = str.trim();//去掉前后的空格
-        //如果为空，直接返回0
-        if (str.length() == 0)
-            return 0;
-        int index = 0;//遍历字符串中字符的位置
-        int res = 0;//最终结果
-        int sign = 1;//符号，1是正数，-1是负数，默认为正数
-        int length = str.length();
-        //判断符号
-        if (str.charAt(index) == '-' || str.charAt(index) == '+')
-            sign = str.charAt(index++) == '+' ? 1 : -1;
-        for (; index < length; ++index) {
-            //取出字符串中字符，然后转化为数字
-            int digit = str.charAt(index) - '0';
-            //按照题中的要求，读入下一个字符，直到到达下一个非数字字符或到达输入的结尾。
-            //字符串的其余部分将被忽略。如果读取了非数字，后面的都要忽略
-            if (digit < 0 || digit > 9)
-                break;
-            //越界处理
-            if (res > Integer.MAX_VALUE / 10 || (res == Integer.MAX_VALUE / 10 && digit > Integer.MAX_VALUE % 10))
-                return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
-            else
-                res = res * 10 + digit;
-        }
-        return sign * res;
-    }
-
     //最长公共前缀
     public String longestCommonPrefix(String[] strs) {
         String res = "";
@@ -216,39 +141,6 @@ public static int maxProduct(String[] words) {
         }
 
         return res;
-    }
-
-    //有效的括号
-    //给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
-    //
-    //有效字符串需满足：
-    //
-    //左括号必须用相同类型的右括号闭合。
-    //左括号必须以正确的顺序闭合。
-    public boolean isValid(String s) {
-        Stack<Character> stack = new Stack<>();
-        char[] chars = s.toCharArray();
-        //遍历所有的元素
-        for (char c : chars) {
-            //如果是左括号，就把他们对应的右括号压栈
-            if (c == '(') {
-                stack.push(')');
-            } else if (c == '{') {
-                stack.push('}');
-            } else if (c == '[') {
-                stack.push(']');
-            } else if (stack.isEmpty() || stack.pop() != c) {
-                //否则就只能是右括号。
-                //1，如果栈为空，说明括号无法匹配。
-                //2，如果栈不为空，栈顶元素就要出栈，和这个右括号比较。
-                //如果栈顶元素不等于这个右括号，说明无法匹配，
-                //直接返回false。
-                return false;
-            }
-        }
-        //最后如果栈为空，说明完全匹配，是有效的括号。
-        //否则不完全匹配，就不是有效的括号
-        return stack.isEmpty();
     }
 
     //最接近的三数之和

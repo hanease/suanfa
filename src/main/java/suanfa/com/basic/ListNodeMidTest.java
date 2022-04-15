@@ -56,6 +56,8 @@ public class ListNodeMidTest {
     }
 
     //反转链表
+    //输入：head = [1,2,3,4,5]
+    //输出：[5,4,3,2,1]
     public ListNode reverseList(ListNode head) {
         Stack<ListNode> stack = new Stack<>();
         //把链表节点全部摘掉放到栈中
@@ -80,6 +82,8 @@ public class ListNodeMidTest {
     }
 
     //合并两个有序链表
+    //输入：l1 = [1,2,4], l2 = [1,3,4]
+    //输出：[1,1,2,3,4,4]
     public ListNode mergeTwoLists(ListNode linked1, ListNode linked2) {
         //下面4行是空判断
         if (linked1 == null)
@@ -102,6 +106,42 @@ public class ListNodeMidTest {
         //然后把那个不为空的链表挂到新的链表中
         curr.next = linked1 == null ? linked2 : linked1;
         return dummy.next;
+    }
+
+    //合并K个排序链表
+    //给你一个链表数组，每个链表都已经按升序排列。
+    //
+    //请你将所有链表合并到一个升序链表中，返回合并后的链表。
+    //输入：lists = [[1,4,5],[1,3,4],[2,6]]
+    //输出：[1,1,2,3,4,4,5,6]
+    public ListNode mergeKLists(ListNode[] lists) {
+        PriorityQueue<ListNode> q = new PriorityQueue<>(new Comparator<ListNode>(){
+            public int compare(ListNode node1, ListNode node2){
+                return node1.val - node2.val;
+            }
+        });
+
+        for(ListNode node: lists){
+            if(node != null){
+                q.offer(node);
+            }
+        }
+
+        ListNode dummyHead = new ListNode(0);
+        ListNode p = dummyHead;
+        while(!q.isEmpty()){
+            ListNode node = q.poll();
+
+            if(node.next != null){
+                q.offer(node.next);
+            }
+
+            node.next = null;
+            p.next = node;
+            p = p.next;
+        }
+
+        return dummyHead.next;
     }
 
     //奇偶链表
@@ -183,6 +223,19 @@ public class ListNodeMidTest {
         return dummy;
     }
 
+    //删除链表中的节点
+    //请编写一个函数，用于 删除单链表中某个特定节点 。在设计函数时需要注意，你无法访问链表的头节点 head ，只能直接访问 要被删除的节点 。
+    //
+    //输入：head = [4,5,1,9], node = 5
+    //输出：[4,1,9]
+    public void deleteNode(ListNode node) {
+        //把要删除结点的下一个结点的值赋给要删除的结点
+        node.val = node.next.val;
+        //然后删除下一个结点
+        node.next = node.next.next;
+
+    }
+
 
     //移除链表元素
     private ListNode removeElements(ListNode head, int val) {
@@ -201,6 +254,64 @@ public class ListNodeMidTest {
             head = head.next;
         }
         return head;
+    }
+
+    //删除链表的倒数第N个节点
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummyHead = new ListNode(-1);
+        dummyHead.next = head;
+        ListNode slow = dummyHead, fast = dummyHead;
+        while (n-- > 0) {
+            fast = fast.next;
+        }
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        slow.next = slow.next.next;
+        return dummyHead.next;
+    }
+    public ListNode removeNthFromEnd1(ListNode head, int n) {
+
+        ListNode tail=head,top=head;
+        for(int i=0;i<n;i++){
+            tail=tail.next;
+        }
+        if(tail==null){
+            return head.next;
+        }
+        while(tail.next!=null){
+            top=top.next;
+            tail=tail.next;
+        }
+        top.next=top.next.next;
+        return head;
+
+    }
+
+    public ListNode removeNthFromEnd2(ListNode head, int n) {
+        ListNode pre = head;
+        int last = length(head) - n;
+        //如果last等于0表示删除的是头结点
+        if (last == 0)
+            return head.next;
+        //这里首先要找到要删除链表的前一个结点
+        for (int i = 0; i < last - 1; i++) {
+            pre = pre.next;
+        }
+        //然后让前一个结点的next指向要删除节点的next
+        pre.next = pre.next.next;
+        return head;
+    }
+
+    //求链表的长度
+    private int length(ListNode head) {
+        int len = 0;
+        while (head != null) {
+            len++;
+            head = head.next;
+        }
+        return len;
     }
 
     //奇偶链表
@@ -280,5 +391,90 @@ public class ListNodeMidTest {
             System.out.print(linkedList.get(i));
         }
     }
+
+    //旋转链表
+    //给你一个链表的头节点 head ，旋转链表，将链表每个节点向右移动 k 个位置。
+    //输入：head = [1,2,3,4,5], k = 2
+    //输出：[4,5,1,2,3]
+    public ListNode rotateRight(ListNode head, int k) {
+        if (k == 0 || head == null || head.next == null) {
+            return head;
+        }
+        // 记录链表长度
+        int length = 1;
+        // 复制链表
+        ListNode iter = head;
+        while (iter.next != null) {
+            iter = iter.next;
+            length++;
+        }
+        // 真正需要移动的步数
+        int add = length - k % length;
+        // 若移动步数与长度相等，则会复原（无需操作）
+        if (add == length) {
+            return head;
+        }
+        // 指向头节点，形成循环链表
+        iter.next = head;
+        // 移动
+        while (add-- > 0) {
+            iter = iter.next;
+        }
+        ListNode ret = iter.next;
+        // 断开
+        iter.next = null;
+        return ret;
+    }
+
+    //环形链表
+    //给你一个链表的头节点 head ，判断链表中是否有环。
+    //
+    //如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。注意：pos 不作为参数进行传递 。仅仅是为了标识链表的实际情况。
+    //输入：head = [3,2,0,-4], pos = 1
+    //输出：true
+    //解释：链表中有一个环，其尾部连接到第二个节点。
+    public boolean hasCycle(ListNode head) {
+        if (head == null)
+            return false;
+        //快慢两个指针
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null) {
+            //慢指针每次走一步
+            slow = slow.next;
+            //快指针每次走两步
+            fast = fast.next.next;
+            //如果相遇，说明有环，直接返回true
+            if (slow == fast)
+                return true;
+        }
+        //否则就是没环
+        return false;
+
+    }
+
+    //环形链表 II
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            //快慢指针，快指针每次走两步，慢指针每次走一步
+            fast = fast.next.next;
+            slow = slow.next;
+            //先判断是否有环，
+            if (slow == fast) {
+                //确定有环之后才能找环的入口
+                while (head != slow) {
+                    //两相遇指针，一个从头结点开始，
+                    //一个从相遇点开始每次走一步，直到
+                    //再次相遇为止
+                    head = head.next;
+                    slow = slow.next;
+                }
+                return slow;
+            }
+        }
+        return null;
+    }
+
 
 }

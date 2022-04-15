@@ -37,22 +37,6 @@ public class ArrayTest {
         System.out.println(containsDuplicate(nums1));
     }
 
-    //加一 给定一个由 整数 组成的 非空 数组所表示的非负整数，在该数的基础上加一。
-    public static int[] plusOne1(int[] digits) {
-        for (int i = digits.length - 1; i >= 0; i--) {
-            if (digits[i] != 9) {
-                digits[i]++;
-                return digits;
-            } else {
-                digits[i] = 0;
-            }
-        }
-        digits = new int[digits.length + 1];
-        digits[0] = 1;
-        return digits;
-
-    }
-
     //删除排序数组中的重复项
     public static int removeDuplicates(int[] nums) {
 
@@ -115,6 +99,38 @@ public class ArrayTest {
 
     }
 
+    //两个数组的交集 II
+    //给你两个整数数组 nums1 和 nums2 ，请你以数组形式返回两数组的交集。返回结果中每个元素出现的次数，应与元素在两个数组中都出现的次数一致（如果出现次数不一致，则考虑取较小值）。可以不考虑输出结果的顺序。
+    //输入：nums1 = [1,2,2,1], nums2 = [2,2]
+    //输出：[2,2]
+    public int[] intersect(int[] nums1, int[] nums2) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        ArrayList<Integer> list = new ArrayList<>();
+
+        //先把数组nums1的所有元素都存放到map中，其中key是数组中
+        //的元素，value是这个元素出现在数组中的次数
+        for (int i = 0; i < nums1.length; i++) {
+            map.put(nums1[i], map.getOrDefault(nums1[i], 0) + 1);
+        }
+
+        //然后再遍历nums2数组，查看map中是否包含nums2的元素，如果包含，
+        //就把当前值加入到集合list中，然后再把对应的value值减1。
+        for (int i = 0; i < nums2.length; i++) {
+            if (map.getOrDefault(nums2[i], 0) > 0) {
+                list.add(nums2[i]);
+                map.put(nums2[i], map.get(nums2[i]) - 1);
+            }
+        }
+
+        //把集合list转化为数组
+        int[] res = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            res[i] = list.get(i);
+        }
+        return res;
+
+    }
+
     //加一
     public static int[] plusOne(int[] digits) {
         String sum = "";
@@ -129,6 +145,23 @@ public class ArrayTest {
             renarr[i] = Integer.valueOf(asss[i]+"");
         }
         return renarr;
+    }
+
+
+    //加一 给定一个由 整数 组成的 非空 数组所表示的非负整数，在该数的基础上加一。
+    public static int[] plusOne1(int[] digits) {
+        for (int i = digits.length - 1; i >= 0; i--) {
+            if (digits[i] != 9) {
+                digits[i]++;
+                return digits;
+            } else {
+                digits[i] = 0;
+            }
+        }
+        digits = new int[digits.length + 1];
+        digits[0] = 1;
+        return digits;
+
     }
 
     //移动零
@@ -158,6 +191,36 @@ public class ArrayTest {
         return new int[]{-1, -1};
     }
 
+    //有效的数独
+    //请你判断一个 9 x 9 的数独是否有效。只需要 根据以下规则 ，验证已经填入的数字是否有效即可。
+    //
+    //数字 1-9 在每一行只能出现一次。
+    //数字 1-9 在每一列只能出现一次。
+    //数字 1-9 在每一个以粗实线分隔的 3x3 宫内只能出现一次。（请参考示例图）
+    public boolean isValidSudoku(char[][] board) {
+        int[] line = new int[9];
+        int[] column = new int[9];
+        int[] cell = new int[9];
+        int shift = 0;
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                //如果还没有填数字，直接跳过
+                if (board[i][j] == '.')
+                    continue;
+                shift = 1 << (board[i][j] - '0');
+                int k = (i / 3) * 3 + j / 3;
+                //如果对应的位置只要有一个大于0，说明有冲突，直接返回false
+                if ((column[i] & shift) > 0 || (line[j] & shift) > 0 || (cell[k] & shift) > 0)
+                    return false;
+                column[i] |= shift;
+                line[j] |= shift;
+                cell[k] |= shift;
+            }
+        }
+        return true;
+
+    }
+
     //旋转图像
     public void rotate(int[][] matrix) {
         int length = matrix.length;
@@ -175,88 +238,6 @@ public class ArrayTest {
                 matrix[j][i] = temp;
             }
         }
-    }
-
-    //反转字符串--对称交换即可
-    public void reverseString(char[] s) {
-        int length = s.length;
-        char temp;
-        for (int i = 0; i < length/2; i++) {
-            temp = s[i];
-            s[i] = s[length-1-i];
-            s[length-1-i] = temp;
-        }
-    }
-
-    //整数反转
-    public int reverse(int x) {
-        long res = 0;
-        while (x != 0) {
-            res = res * 10 + x % 10;
-            x /= 10;
-        }
-        return (int) res == res ? (int) res : 0;
-    }
-
-    //字符串中的第一个唯一字符
-    public int firstUniqChar(String s) {
-        Map<Character, Integer> map = new HashMap();
-        char[] chars = s.toCharArray();
-        //先统计每个字符的数量
-        for (char ch : chars) {
-            map.put(ch, map.getOrDefault(ch, 0) + 1);
-        }
-        //然后在遍历字符串s中的字符，如果出现次数是1就直接返回
-        for (int i = 0; i < s.length(); i++) {
-            if (map.get(chars[i]) == 1) {
-                return i;
-            }
-        }
-        return -1;
-
-        /*for (int i = 0; i < s.length(); i++)
-            if (s.indexOf(s.charAt(i)) == s.lastIndexOf(s.charAt(i)))
-                return i;
-        return -1;*/
-
-    }
-
-    //验证回文串
-    public boolean isPalindrome(String s) {
-        if (s.length() == 0)
-            return true;
-        int left = 0, right = s.length() - 1;
-        while (left < right) {
-            //因为题中说了，只考虑字母和数字，所以不是字母和数字的先过滤掉
-            while (left < right && !Character.isLetterOrDigit(s.charAt(left)))
-                left++;
-            while (left < right && !Character.isLetterOrDigit(s.charAt(right)))
-                right--;
-            //然后把两个字符变为小写，在判断是否一样，如果不一样，直接返回false
-            if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right)))
-                return false;
-            left++;
-            right--;
-        }
-        return true;
-    }
-
-    //字符串转换整数 (atoi)
-    //最长公共前缀
-    public String longestCommonPrefix(String[] strs) {
-        //边界条件判断
-        if (strs == null || strs.length == 0)
-            return "";
-        //默认第一个字符串是他们的公共前缀
-        String pre = strs[0];
-        int i = 1;
-        while (i < strs.length) {
-            //不断的截取
-            while (strs[i].indexOf(pre) != 0)
-                pre = pre.substring(0, pre.length() - 1);
-            i++;
-        }
-        return pre;
     }
 
     //合并两个有序数组

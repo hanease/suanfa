@@ -246,6 +246,4 @@ public class ArrayMidTest {
         return true;
     }
 
-    //
-
 }

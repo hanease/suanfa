@@ -9,15 +9,15 @@ public class BacktrackTest {
         int[] input = new int[]{3, 1, 82, 82, -4, 2,19,3,-1};
         int[] nums = new int[]{1, 1, 2, 3, 4, 4, 5};
         int[] nums1 = new int[]{1, 1, 1, 3, 3, 4, 3, 2, 4, 2};
-        int ren = findKthLargest(input,4);
-        int[] m = searchRange(nums,4);
-        System.out.println(ren);
+        //System.out.println(ren);
     }
 
-
-
+    //回溯算法-------------------------------------------------------------------
     //电话号码的字母组合
-    //给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。
+    //给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。
+    //给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+    //输入：digits = "23"
+    //输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
     public static List<String> letterCombinations(String digits) {
         List<String> ans = new ArrayList<>();
         if (digits.length() == 0) {
@@ -57,39 +57,81 @@ public class BacktrackTest {
 
     }
 
-    //全排列
-    //给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
-    public List<List<Integer>> permute(int[] nums) {
-        List<List<Integer>> list = new ArrayList<>();
-        backtrack(list, new ArrayList<>(), nums);
-        return list;
+    //括号生成
+    //数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+    //输入：n = 3
+    //输出：["((()))","(()())","(())()","()(())","()()()"]
+    public List<String> generateParenthesis(int n) {
+        List<String> res = new ArrayList<>();
+        dfs(res, n, n, "");
+        return res;
     }
 
-    private void backtrack(List<List<Integer>> list, List<Integer> tempList, int[] nums) {
-        //终止条件，如果数字都被使用完了，说明找到了一个排列，（可以把它看做是n叉树到
-        //叶子节点了，不能往下走了，所以要返回）
-        if (tempList.size() == nums.length) {
-            //因为list是引用传递，这里必须要重新new一个
-            list.add(new ArrayList<>(tempList));
+    private void dfs(List<String> res, int left, int right, String curStr) {
+        if (left == 0 && right == 0) { // 左右括号都不剩余了，说明找到了有效的括号
+            res.add(curStr);
             return;
         }
-        //（可以把它看做是遍历n叉树每个节点的子节点）
-        for (int i = 0; i < nums.length; i++) {
-            //因为不能有重复的，所以有重复的就跳过
-            if (tempList.contains(nums[i]))
-                continue;
-            //选择当前值
-            tempList.add(nums[i]);
-            //递归（可以把它看做遍历子节点的子节点）
-            backtrack(list, tempList, nums);
+        //左括号只有剩余的时候才可以选，如果左括号的数量已经选完了，是不能再选左括号了。
+        //如果选完了左括号我们是还可以选择右括号的。
+        if (left < 0)
+            return;
+        // 如果右括号剩余数量小于左括号剩余的数量，说明之前选择的无效
+        if (right < left)
+            return;
+        //选择左括号
+        dfs(res, left - 1, right, curStr + "(");
+        //选择右括号
+        dfs(res, left, right - 1, curStr + ")");
+    }
+
+    //全排列
+    //给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
+    //输入：nums = [1,2,3]
+    //输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        backtrack(nums, 0, res);
+        return res;
+    }
+
+    public void backtrack(int[] nums, int index, List<List<Integer>> res) {
+        //到最后一个数字，没法再交换了，直接把数组转化为list
+        if (index == nums.length - 1) {
+            //把数组转为list
+            List<Integer> tempList = new ArrayList<>();
+            for (int num : nums)
+                tempList.add(num);
+            //把list加入到res中
+            res.add(tempList);
+            return;
+        }
+        for (int i = index; i < nums.length; i++) {
+            //但前数字nums[index]要和后面所有的数字都要交换一遍（包括
+            // 他自己）
+            swap(nums, index, i);
+            //递归，数组[0,index]默认是已经排列好的，然后从index+1开始
+            //后面元素的交换
+            backtrack(nums, index + 1, res);
+            //还原回来
+            swap(nums, index, i);
         }
     }
 
-
+    //交换两个数字的值
+    private void swap(int[] nums, int i, int j) {
+        if (i != j) {
+            nums[i] ^= nums[j];
+            nums[j] ^= nums[i];
+            nums[i] ^= nums[j];
+        }
+    }
 
     //子集
     //给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
+    //
     //解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。
+    //示例 1：
     //输入：nums = [1,2,3]
     //输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
     public List<List<Integer>> subsets(int[] nums) {
@@ -113,8 +155,10 @@ public class BacktrackTest {
 
     //单词搜索
     //给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。
+    //
     //单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
-
+    //输入：board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+    //输出：true
     public boolean exist(char[][] board, String word) {
         char[] words = word.toCharArray();
         for (int i = 0; i < board.length; i++) {
@@ -148,159 +192,5 @@ public class BacktrackTest {
         board[i][j] = tmp;
         return res;
     }
-
-    //多数元素
-    //给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
-    //
-    //你可以假设数组是非空的，并且给定的数组总是存在多数元素。
-
-    public int majorityElement(int[] nums) {
-        int count = 1;
-        int res = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            //遇到友军阵容增加
-            if (res == nums[i])
-                count++;
-            else {
-                //遭遇敌军，对拼消耗
-                count--;
-                //该批友军阵亡，换下一批作为友军记录
-                if (count == 0) {
-                    res = nums[i + 1];
-                }
-            }
-        }
-        return res;
-    }
-
-    //颜色分类
-    //给定一个包含红色、白色和蓝色、共 n 个元素的数组 nums ，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
-    //我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
-    //必须在不使用库的sort函数的情况下解决这个问题。
-    // 
-    //示例 1：
-    //输入：nums = [2,0,2,1,1,0]
-    //输出：[0,0,1,1,2,2]
-    public void sortColors(int[] nums) {
-        int left=0, right=nums.length-1;   //left代表红色，right代表蓝色
-        for(int i=0; i<=right; i++){
-            if(nums[i] == 0){
-                swap(nums, left, i);
-                left++;
-            }
-            if(nums[i] == 2){
-                swap(nums, i, right);
-                right--;
-                i--;                     //防止漏算
-            }
-        }
-    }
-    public void swap(int[] nums, int i, int j){
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
-    }
-
-    //前 K 个高频元素
-    //给你一个整数数组 nums 和一个整数 k ，请你返回其中出现频率前 k 高的元素。你可以按 任意顺序 返回答案。
-    //示例 1:
-    //
-    //输入: nums = [1,1,1,2,2,3], k = 2
-    //输出: [1,2]
-
-    public int[] topKFrequent(int[] nums, int k) {
-        //先统计每个数字出现的次数
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int num : nums)
-            map.put(num, map.getOrDefault(num, 0) + 1);
-
-        //最大堆
-        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((a, b) -> b[1] - a[1]);
-        for (int key : map.keySet())
-            priorityQueue.add(new int[]{key, map.get(key)});
-
-        //取堆中最大的k个元素
-        int[] res = new int[k];
-        for (int i = 0; i < k; i++)
-            res[i] = priorityQueue.poll()[0];
-        return res;
-    }
-
-
-    //数组中的第K个最大元素
-    //给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
-    //
-    //请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
-
-    public static int findKthLargest(int[] nums, int k) {
-        boolean flag = false;
-        PriorityQueue<Integer> heap = new PriorityQueue<>(k);
-        for (int num : nums) {
-            heap.offer(num);
-            if (flag || heap.size() > k) {
-                heap.poll();
-                flag = true;
-            }
-        }
-        return heap.peek();
-    }
-
-    //寻找峰值
-    //峰值元素是指其值严格大于左右相邻值的元素。
-    //
-    //给你一个整数数组 nums，找到峰值元素并返回其索引。数组可能包含多个峰值，在这种情况下，返回 任何一个峰值 所在位置即可。
-    //
-    //你可以假设 nums[-1] = nums[n] = -∞ 。
-
-    public int findPeakElement(int[] nums) {
-        for (int i = 0; i < nums.length; i++) {
-            if(i - 1 >=0 && nums[i - 1] > nums[i])
-                continue;
-            if(i + 1 < nums.length && nums[i + 1] > nums[i])
-                continue;
-            return i;
-        }
-        return -1;
-    }
-
-
-    //在排序数组中查找元素的第一个和最后一个位置
-    //给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。
-    //
-    //如果数组中不存在目标值 target，返回 [-1, -1]。
-    //
-    //进阶：
-    //
-    //你可以设计并实现时间复杂度为 O(log n) 的算法解决此问题吗？
-    // 
-    //
-    //示例 1：
-    //
-    //输入：nums = [5,7,7,8,8,10], target = 8
-    //输出：[3,4]
-    public static int[] searchRange(int[] nums, int target) {
-        int count1 = 0;
-        int count2 = 0;
-        boolean b = true;
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] == target) {
-                count1 = i;
-                b = false;
-                break;
-            }
-        }
-        for (int i = nums.length - 1; i >= 0; i--) {
-            if (nums[i] == target) {
-                count2 = i;
-                b = false;
-                break;
-            }
-        }
-        if (b == false) {
-            return new int[]{count1, count2};
-        }
-        return new int[]{-1, -1};
-    }
-
 
 }

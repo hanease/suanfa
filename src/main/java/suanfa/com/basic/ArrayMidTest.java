@@ -131,7 +131,6 @@ public class ArrayMidTest {
     //输入: s = "abcabcbb"
     //输出: 3
     //解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
-
     public int lengthOfLongestSubstring1(String s) {
         //创建队列
         Queue<Character> queue = new LinkedList<>();
@@ -232,5 +231,7 @@ public class ArrayMidTest {
         }
         return true;
     }
+
+    //
 
 }

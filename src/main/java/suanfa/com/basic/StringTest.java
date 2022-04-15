@@ -352,10 +352,52 @@ public class StringTest {
         return stack.isEmpty();
     }
 
+    //反转字符串
+    //示例 1：
+    //
+    //输入：s = ["h","e","l","l","o"]
+    //输出：["o","l","l","e","h"]
+    public void reverseString1(char[] nums) {
+        if (nums.length <= 1)
+            return;
+
+        int herd = 0;
+        int tail = nums.length - 1;
+        while (herd < tail) {
+            //获取尾部下标数据
+            char str = nums[tail];
+            //尾部数据 = 头步数据
+            nums[tail] = nums[herd];
+            //头部数据 = 尾部数据
+            nums[herd] = str;
+            herd ++;
+            tail --;
+        }
+    }
+
     // 翻转字符串里的单词
     // 方法一;思路：数组的翻转
-    // 时间复杂度;O（n）
-    // 空间复杂度：O（）
+    //输入：s = "the sky is blue"
+    //输出："blue is sky the"
+    public String reverseWords(String s) {
+        // 设置一个栈存放单词
+        Stack<String> stack = new Stack<>();
+        s.trim();
+        String[] wordArray = s.split(" ");
+        for (String word : wordArray) {
+            if (!word.isEmpty()) {
+                stack.add(word);
+            }
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+        while (!stack.isEmpty()) {
+            stringBuffer.append(stack.pop());
+            if (!stack.isEmpty()){
+                stringBuffer.append(" ");
+            }
+        }
+        return stringBuffer.toString();
+    }
     public String reverseWords_1(String s) {
         String[] wordArray = s.split(" ");
         StringBuffer stringBuffer = new StringBuffer();
@@ -419,61 +461,15 @@ public class StringTest {
         while (len-- > 0) {
             if (s.charAt(len) == ' ') {
                 String word = s.substring(len + 1, s.length());
-                return word + " " + reverseWords(s.substring(0, len));
+                return word + " " + reverseWords_4(s.substring(0, len));
             }
         }
         return s;
     }
 
-    //反转字符串
-    //示例 1：
-    //
-    //输入：s = ["h","e","l","l","o"]
-    //输出：["o","l","l","e","h"]
-    public void reverseString1(char[] s) {
-        // 双指针解决
-        if(s == null || s.length < 2){
-            return;
-        }
-        int l = 0;
-        int r = s.length -1;
-        while(l < r){
-            char c = s[l];
-            s[l] = s[r];
-            s[r] = c;
-            l++;
-            r--;
-        }
-    }
-
-    //  翻转字符串里的单词
-    public String reverseWords(String s) {
-        // 设置一个栈存放单词
-        Stack<String> stack = new Stack<>();
-        s.trim();
-        String[] wordArray = s.split(" ");
-        for (String word : wordArray) {
-            if (!word.isEmpty()) {
-                stack.add(word);
-            }
-        }
-        StringBuffer stringBuffer = new StringBuffer();
-        while (!stack.isEmpty()) {
-            stringBuffer.append(stack.pop());
-            if (!stack.isEmpty()){
-                stringBuffer.append(" ");
-            }
-        }
-        return stringBuffer.toString();
-    }
-
     //反转字符串中的单词 III
     //给定一个字符串 s ，你需要反转字符串中每个单词的字符顺序，同时仍保留空格和单词的初始顺序。
-    //
-    // 
-    //
     //示例 1：
-    //
     //输入：s = "Let's take LeetCode contest"
     //输出："s'teL ekat edoCteeL tsetnoc"
     public static String reverseWords4(String s) {
@@ -503,6 +499,159 @@ public class StringTest {
             result = result + arr[i];
         }
         return result;
+    }
+
+    //计数质数
+    //给定整数 n ，返回 所有小于非负整数 n 的质数的数量 。
+    //输入：n = 10
+    //输出：4
+    //解释：小于 10 的质数一共有 4 个, 它们是 2, 3, 5, 7 。
+    public int countPrimes(int n) {
+        boolean[] arr = new boolean[n];
+        int cnt = 0;
+        for(int i = 2; i < n; i++) {
+            if(arr[i]) continue;
+            cnt++;
+            for(int j = i; j < n; j+=i) {
+                arr[j] = true;
+            }
+        }
+        return cnt;
+    }
+
+    //3的幂
+    //给定一个整数，写一个函数来判断它是否是 3 的幂次方。如果是，返回 true ；否则，返回 false 。
+    //
+    //整数 n 是 3 的幂次方需满足：存在整数 x 使得 n == 3x
+    public boolean isPowerOfThree(int n) {
+        if (n > 1)
+            while (n % 3 == 0)
+                n /= 3;
+        return n == 1;
+    }
+
+    //Fizz Buzz
+    //给你一个整数 n ，找出从 1 到 n 各个整数的 Fizz Buzz 表示，并用字符串数组 answer（下标从 1 开始）返回结果，其中：
+    //
+    //answer[i] == "FizzBuzz" 如果 i 同时是 3 和 5 的倍数。
+    //answer[i] == "Fizz" 如果 i 是 3 的倍数。
+    //answer[i] == "Buzz" 如果 i 是 5 的倍数。
+    //answer[i] == i （以字符串形式）如果上述条件全不满足。
+    public List<String> fizzBuzz(int n) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 1; i <= n; i++) {
+            if (i % 15 == 0) {
+                res.add("FizzBuzz");
+                continue;
+            }
+            if (i % 3 == 0)
+                res.add("Fizz");
+            else if (i % 5 == 0)
+                res.add("Buzz");
+            else
+                res.add(Integer.toString(i));
+        }
+        return res;
+    }
+
+    //罗马数字转整数
+    //罗马数字包含以下七种字符: I， V， X， L，C，D 和 M。
+    //
+    //字符          数值
+    //I             1
+    //V             5
+    //X             10
+    //L             50
+    //C             100
+    //D             500
+    //M             1000
+    public int romanToInt(String s) {
+        Map<String, Integer> map = new HashMap<>();
+        //所有可能的都列出来
+        map.put("I", 1);
+        map.put("IV", 4);
+        map.put("V", 5);
+        map.put("IX", 9);
+        map.put("X", 10);
+        map.put("XL", 40);
+        map.put("L", 50);
+        map.put("XC", 90);
+        map.put("C", 100);
+        map.put("CD", 400);
+        map.put("D", 500);
+        map.put("CM", 900);
+        map.put("M", 1000);
+
+        int res = 0;
+        for (int i = 0; i < s.length(); ) {
+            //先截取两个字符，如果这两个字符存在于map中，就表示他们是一个整体。否则就截取一个
+            if (i + 1 < s.length() && map.containsKey(s.substring(i, i + 2))) {
+                res += map.get(s.substring(i, i + 2));
+                i += 2;
+            } else {
+                res += map.get(s.substring(i, i + 1));
+                i++;
+            }
+        }
+        return res;
+    }
+
+    //位1的个数
+    //编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为汉明重量）。
+
+    public int hammingWeight(int n) {
+        int count = 0;
+        for (int i = 0; i < 32; i++) {
+            if (((n >>> i) & 1) == 1) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    //颠倒二进制位
+    //颠倒给定的 32 位无符号整数的二进制位。
+    //请注意，在某些语言（如 Java）中，没有无符号整数类型。在这种情况下，输入和输出都将被指定为有符号整数类型，并且不应影响您的实现，因为无论整数是有符号的还是无符号的，其内部的二进制表示形式都是相同的。
+    //在 Java 中，编译器使用二进制补码记法来表示有符号整数。因此，在 示例 2 中，输入表示有符号整数 -3，输出表示有符号整数 -1073741825。
+    //输入：n = 00000010100101000001111010011100
+    //输出：964176192 (00111001011110000010100101000000)
+    //解释：输入的二进制串 00000010100101000001111010011100 表示无符号整数 43261596，
+    //     因此返回 964176192，其二进制表示形式为 00111001011110000010100101000000。
+    public int reverseBits(int n) {
+        int res = 0;
+        for (int i = 0; i < 32; i++) {
+            //res先往左移一位，把最后一个位置空出来，
+            //用来存放n的最后一位数字
+            res <<= 1;
+            //res加上n的最后一位数字
+            res |= n & 1;
+            //n往右移一位，把最后一位数字去掉
+            n >>= 1;
+        }
+        return res;
+    }
+
+    //杨辉三角
+    //给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
+    //
+    //在「杨辉三角」中，每个数是它左上方和右上方的数的和。
+
+    public static List<List<Integer>> generate(int numRows) {
+        //结果值
+        List<List<Integer>> res = new ArrayList<>();
+        //每一行的元素
+        ArrayList<Integer> row = new ArrayList<>();
+        for (int i = 0; i < numRows; i++) {
+            //下面一行都会比上面一行多一个元素，我们在第一个位置给他加个1
+            row.add(0, 1);
+            //遍历每一行的结果，遍历的时候跳过第一个和最后一个，
+            //每个格子的值都是他正上面和左上角元素的和
+            for (int j = 1; j < row.size() - 1; j++)
+                row.set(j, row.get(j) + row.get(j + 1));
+            //把结果存放到res中
+            res.add(new ArrayList<>(row));
+        }
+        return res;
     }
 
 }

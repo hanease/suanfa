@@ -25,14 +25,14 @@ public class ArrTest {
         System.out.println(newStr);
     }
 
-public static int maxProduct(String[] words) {
+    public static int maxProduct(String[] words) {
 
-/**
- 全是小写字母, 可以用一个32为整数表示一个word中出现的字母,
- hash[i]存放第i个单词出现过的字母, a对应32位整数的最后一位,
- b对应整数的倒数第二位, 依次类推. 时间复杂度O(N^2)
- 判断两两单词按位与的结果, 如果结果为0且长度积大于最大积则更新
- **/
+        /**
+         全是小写字母, 可以用一个32为整数表示一个word中出现的字母,
+         hash[i]存放第i个单词出现过的字母, a对应32位整数的最后一位,
+         b对应整数的倒数第二位, 依次类推. 时间复杂度O(N^2)
+         判断两两单词按位与的结果, 如果结果为0且长度积大于最大积则更新
+         **/
         int n = words.length;
         int[] hash = new int[n];
         int max = 0;
@@ -70,7 +70,6 @@ public static int maxProduct(String[] words) {
     //给定两个大小分别为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的 中位数 。
     //
     //算法的时间复杂度应该为 O(log (m+n)) 。
-
     public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
 
         /*
@@ -197,7 +196,6 @@ public static int maxProduct(String[] words) {
         return A.length - count;
     }
 
-
     //除自身以外数组的乘积
     //输入: nums = [1,2,3,4]
     //输出: [24,12,8,6]
@@ -229,6 +227,38 @@ public static int maxProduct(String[] words) {
             }
         }
         return false;
+    }
+
+    //旋转矩阵
+    //给你一幅由 N × N 矩阵表示的图像，其中每个像素的大小为 4 字节。请你设计一种算法，将图像旋转 90 度。
+    //给定 matrix =
+    //[
+    //  [1,2,3],
+    //  [4,5,6],
+    //  [7,8,9]
+    //],
+    //原地旋转输入矩阵，使其变为:
+    //[
+    //  [7,4,1],
+    //  [8,5,2],
+    //  [9,6,3]
+    //]
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n / 2; ++i) {
+            for (int j = 0; j < n; ++j) {
+                matrix[i][j] = matrix[i][j] ^ matrix[n - i - 1][j];
+                matrix[n - i - 1][j] = matrix[i][j] ^ matrix[n - i - 1][j];
+                matrix[i][j] = matrix[i][j] ^ matrix[n - i - 1][j];
+            }
+        }
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < i; ++j) {
+                matrix[i][j] = matrix[i][j] ^ matrix[j][i];
+                matrix[j][i] = matrix[i][j] ^ matrix[j][i];
+                matrix[i][j] = matrix[i][j] ^ matrix[j][i];
+            }
+        }
     }
 
 
@@ -323,7 +353,6 @@ public static int maxProduct(String[] words) {
     }
 
     // 3、请通过 Solution 类的 getList 方法返回一个 List 的实现类，要求是线程安全的，你可以自己设计一个同步的 List 实现类进行返回。
-
     public static List<Integer> getList() {
         // 三种线程安全的容器
         // 使用Vector
@@ -346,6 +375,138 @@ public static int maxProduct(String[] words) {
             System.out.println(b[i]);
         }
 
+    }
+
+    //零矩阵
+    //编写一种算法，若M × N矩阵中某个元素为0，则将其所在的行与列清零。
+    //输入：
+    //[
+    //  [1,1,1],
+    //  [1,0,1],
+    //  [1,1,1]
+    //]
+    //输出：
+    //[
+    //  [1,0,1],
+    //  [0,0,0],
+    //  [1,0,1]
+    //]
+    public void setZeroes(int[][] matrix) {
+        ArrayList<int[]> book = new ArrayList();
+        int m = matrix.length;
+        int n = matrix[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 0) {
+                    int[] a = new int[2];
+                    a[0] = i;
+                    a[1] = j;
+                    book.add(a);
+                }
+            }
+        }
+
+        for (int[] b : book) {
+            for (int i = 0; i <m ; i++) {
+                matrix[i][b[1]]=0;
+            }
+            for (int i = 0; i <n ; i++) {
+                matrix[b[0]][i]=0;
+            }
+        }
+    }
+
+    //对角线遍历
+    //给你一个大小为 m x n 的矩阵 mat ，请以对角线遍历的顺序，用一个数组返回这个矩阵中的所有元素。
+    //输入：mat = [[1,2,3],[4,5,6],[7,8,9]]
+    //输出：[1,2,4,7,5,3,6,8,9]
+    public int[] findDiagonalOrder(int[][] matrix) {
+        if (matrix.length <= 0) {
+            return new int[]{};
+        }
+        //根据每个元素x和y的初始化集合
+        List<List<Integer>> axisCount = new ArrayList<>();
+        //x和y轴之后最大值
+        int maxLength = matrix.length + matrix[0].length - 1;
+        for (int i = 0; i < maxLength; i++) {
+            //初始化集合
+            axisCount.add(new ArrayList<>());
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                //计算每个元素x和y的和
+                int a = i + j;
+                int value = matrix[i][j];
+                //根据x和y轴的和获取list，存放当前value
+                axisCount.get(a).add(value);
+            }
+        }
+        List<Integer> dataList = new ArrayList<>();
+        for (int i = 0; i < axisCount.size(); i++) {
+            List<Integer> singleList = axisCount.get(i);
+            //偶数按照插入顺序倒叙排列
+            if (i % 2 == 0) {
+                Collections.reverse(axisCount.get(i));
+            }
+            //奇数
+            dataList.addAll(singleList);
+        }
+        int[] arr = new int[dataList.size()];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = dataList.get(i);
+        }
+        return arr;
+    }
+
+    //数组拆分 I
+    //给定长度为 2n 的整数数组 nums ，你的任务是将这些数分成 n 对, 例如 (a1, b1), (a2, b2), ..., (an, bn) ，使得从 1 到 n 的 min(ai, bi) 总和最大。
+    //输入：nums = [1,4,3,2]
+    //输出：4
+    //解释：所有可能的分法（忽略元素顺序）为：
+    //1. (1, 4), (2, 3) -> min(1, 4) + min(2, 3) = 1 + 2 = 3
+    //2. (1, 3), (2, 4) -> min(1, 3) + min(2, 4) = 1 + 2 = 3
+    //3. (1, 2), (3, 4) -> min(1, 2) + min(3, 4) = 1 + 3 = 4
+    //所以最大总和为 4
+    public int arrayPairSum(int[] nums) {
+        int[] count = new int[20001];
+        for(int x:nums){
+            count[x + 10000]++;
+        }
+        // borrow是向上借一个
+        int ret = 0, borrow=0;
+        for(int i=-10000;i<=10000;i++){
+            // count[i]是总共出现了多少个， -borrow是i-1有没有借走一个
+            // +1是为了保证，count[i] - borrow是奇数的情况下，多算一个
+            ret += (count[i+10000] - borrow + 1) / 2 * i;
+
+            // 更新borrow，如果count[i] - borrow是奇数，就得从i+1借一个
+            // +2是java语言防止-1 % 2 == -1
+            borrow = (count[i+10000] - borrow + 2) % 2;
+        }
+        return ret;
+    }
+
+    //两数之和 II - 输入有序数组
+    //示例 1：
+    //
+    //输入：numbers = [2,7,11,15], target = 9
+    //输出：[1,2]
+    //解释：2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2 。返回 [1, 2] 。
+    public int[] twoSum2(int[] numbers, int target) {
+        int[] res=new int[]{-1,-1};
+        int left=0,right=numbers.length-1;
+        while(left<right){
+            if(numbers[left]+numbers[right]==target){
+                res[0]=left+1;
+                res[1]=right+1;
+                break;
+            }else if(numbers[left]+numbers[right]<target){
+                left++;
+            }else{
+                right--;
+            }
+        }
+        return res;
     }
 
 

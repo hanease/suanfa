@@ -1,6 +1,7 @@
 package suanfa.com.basic;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class ArrayMidTest {
 
@@ -245,5 +246,124 @@ public class ArrayMidTest {
         }
         return true;
     }
+
+    //57. 插入区间
+    //给你一个 无重叠的 ，按照区间起始端点排序的区间列表。
+    //
+    //在列表中插入一个新的区间，你需要确保列表中的区间仍然有序且不重叠（如果有必要的话，可以合并区间）。
+    //输入：intervals = [[1,3],[6,9]], newInterval = [2,5]
+    //输出：[[1,5],[6,9]]
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        boolean visited=false;
+        List<int[]>list=new ArrayList<>();
+        for(int i=0;i<intervals.length;i++){
+            int[]v=intervals[i];
+            if(!visited){
+                //如果要插入的区间在左边
+                if(newInterval[1]<v[0]){
+                    list.add(newInterval);
+                    list.add(v);
+                    visited=true;
+                }else if(newInterval[0]>v[1]){
+                    list.add(v);
+                }else{
+                    list.add(merge(v,newInterval));
+                    visited=true;
+                }
+            }else{
+                //visited=true
+                int[] last=list.get(list.size()-1);
+                if(v[0]<=last[1]){
+                    //涉及
+                    list.add(merge(v,list.remove(list.size()-1)));
+                }else list.add(v);
+            }
+        }
+        if(!visited) list.add(newInterval);
+        int[][]res=new int[list.size()][2];
+        IntStream.range(0,list.size()).forEach(i->res[i]=list.get(i));
+        return res;
+    }
+    public int[] merge(int[]a,int[]b){
+        return new int[]{Math.min(a[0],b[0]),Math.max(a[1],b[1])};
+    }
+
+    //442. 数组中重复的数据
+    //给你一个长度为 n 的整数数组 nums ，其中 nums 的所有整数都在范围 [1, n] 内，且每个整数出现 一次 或 两次 。请你找出所有出现 两次 的整数，并以数组形式返回。
+    //
+    //你必须设计并实现一个时间复杂度为 O(n) 且仅使用常量额外空间的算法解决此问题。
+    //输入：nums = [4,3,2,7,8,2,3,1]
+    //输出：[2,3]
+    public List<Integer> findDuplicates(int[] nums) {
+        List<Integer> rs = new ArrayList<>();
+        for(int i=0;i<nums.length;i++) {
+            if(nums[Math.abs(nums[i])-1]<0) {
+                rs.add(Math.abs(nums[i]));
+            }else {
+                nums[Math.abs(nums[i])-1]*=-1;
+            }
+        }
+
+        return rs;
+    }
+
+    //1817. 查找用户活跃分钟数
+    //给你用户在 LeetCode 的操作日志，和一个整数 k 。日志用一个二维整数数组 logs 表示，其中每个 logs[i] = [IDi, timei] 表示 ID 为 IDi 的用户在 timei 分钟时执行了某个操作。
+    //多个用户 可以同时执行操作，单个用户可以在同一分钟内执行 多个操作 。
+    //指定用户的 用户活跃分钟数（user active minutes，UAM） 定义为用户对 LeetCode 执行操作的 唯一分钟数 。 即使一分钟内执行多个操作，也只能按一分钟计数。
+    //请你统计用户活跃分钟数的分布情况，统计结果是一个长度为 k 且 下标从 1 开始计数 的数组 answer ，对于每个 j（1 <= j <= k），answer[j] 表示 用户活跃分钟数 等于 j 的用户数
+    //返回上面描述的答案数组 answer 。
+    //输入：logs = [[0,5],[1,2],[0,2],[0,5],[1,3]], k = 5
+    //输出：[0,2,0,0,0]
+    //解释：
+    //ID=0 的用户执行操作的分钟分别是：5 、2 和 5 。因此，该用户的用户活跃分钟数为 2（分钟 5 只计数一次）
+    //ID=1 的用户执行操作的分钟分别是：2 和 3 。因此，该用户的用户活跃分钟数为 2
+    //2 个用户的用户活跃分钟数都是 2 ，answer[2] 为 2 ，其余 answer[j] 的值都是 0
+    public int[] findingUsersActiveMinutes(int[][] logs, int k) {
+        Map<Integer,Integer> map = new HashMap<>();
+        int[] array = new int[k];
+        Arrays.sort(logs, (o1, o2) -> o1[0]==o2[0]?o1[1]-o2[1]:o1[0]-o2[0]);
+        map.put(logs[0][0],1);
+        for (int i = 1; i < logs.length; i++) {
+            if (logs[i-1][0]==logs[i][0]&&logs[i-1][1]==logs[i][1]){
+                continue;
+            }
+            map.put(logs[i][0],map.getOrDefault(logs[i][0],0)+1);
+        }
+        for (Integer integer : map.keySet()) {
+            array[map.get(integer)-1]+=1;
+        }
+        return array;
+    }
+
+    //1333. 餐厅过滤器
+    //给你一个餐馆信息数组 restaurants，其中  restaurants[i] = [idi, ratingi, veganFriendlyi, pricei, distancei]。你必须使用以下三个过滤器来过滤这些餐馆信息。
+    //
+    //其中素食者友好过滤器 veganFriendly 的值可以为 true 或者 false，如果为 true 就意味着你应该只包括 veganFriendlyi 为 true 的餐馆，为 false 则意味着可以包括任何餐馆。此外，我们还有最大价格 maxPrice 和最大距离 maxDistance 两个过滤器，它们分别考虑餐厅的价格因素和距离因素的最大值。
+    //
+    //过滤后返回餐馆的 id，按照 rating 从高到低排序。如果 rating 相同，那么按 id 从高到低排序。简单起见， veganFriendlyi 和 veganFriendly 为 true 时取值为 1，为 false 时，取值为 0 。
+    //输入：restaurants = [[1,4,1,40,10],[2,8,0,50,5],[3,8,1,30,4],[4,10,0,10,3],[5,1,1,15,1]], veganFriendly = 1, maxPrice = 50, maxDistance = 10
+    //输出：[3,1,5]
+    public List<Integer> filterRestaurants(int[][] restaurants, int veganFriendly, int maxPrice, int maxDistance) {
+        // 过滤收集
+        List<int[]> collector = new ArrayList<>();
+        for (int[] restaurant : restaurants) {
+            if (veganFriendly == 1 && restaurant[2] == 0 || restaurant[3] > maxPrice || restaurant[4] > maxDistance) {
+                continue;
+            }
+            collector.add(restaurant);
+        }
+        // 排序
+        collector.sort((o1, o2) -> o1[1] == o2[1] ? o2[0] - o1[0] : o2[1] - o1[1]);
+        List<Integer> res = new ArrayList<>();
+        for (int[] rest : collector) {
+            res.add(rest[0]);
+        }
+        return res;
+    }
+
+
+
+
 
 }

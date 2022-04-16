@@ -9,7 +9,8 @@ public class StringTest {
     public static void main(String args[]) throws IOException {
         String str = new String("Welcome-to-Runoob");
         String s1111 = "Let's take LeetCode contest";
-        String abssss = reverseWords4(s1111);
+        //String abssss = reverseWords4(s1111);
+        String abssss11 = deleteText(s1111,8);
 
         System.out.println("- 分隔符返回值 :" );
         for (String retval: str.split("-")){
@@ -653,5 +654,218 @@ public class StringTest {
         }
         return res;
     }
+
+
+    //招商银行-01. 文本编辑程序设计
+    //通过的用户数712
+    //尝试过的用户数736
+    //用户总通过次数722
+    //用户总提交次数1753
+    //题目难度Easy
+    //请你设计一个文本编辑程序，需要编辑的稿件 article 为仅由大写字母、小写字母与空格组成的字符串（下标从 0 开始），光标所在字符串下标位置记作 index，程序运行后，若光标停留位置为空格，不作操作，返回原文本；否则光标所在位置对应的整个单词将被删除，并返回编辑后经过整理空格的文本。
+    //
+    //注意：
+    //
+    //输入保证字符串不以空格开头和结尾且不包含连续的空格。
+    //返回的字符串不以空格开头和结尾且不包含连续的空格。若删除单词后有多余的空格，需要删除。
+    //示例 1：
+    //
+    //输入：article = "Singing dancing in the rain", index = 10
+    //
+    //输出："Singing in the rain"
+    //
+    //解释：
+    //"Singing dancing in the rain" 光标位于 "dancing" 单词的字符 'n'
+    //删除光标所在的单词 "dancing" 及其前或后的一个空格。
+    //
+    //示例 2：
+    //
+    //输入：article = "Hello World", index = 2
+    //
+    //输出："World"
+    public static  String deleteText(String article, int index) {
+        char se = article.charAt(index);
+        if(" ".equals(String.valueOf(se))){
+            return article;
+        }
+        String[] words = article.split(" ");
+        List<String> aa = new ArrayList<>();
+        for(String word1:words){
+            aa.add(word1);
+        }
+        int selec = 0;
+        int size = 0;
+        for(String word:words){
+            size = size+word.length() + 1;
+            if(index<size){
+                break;
+            }
+            selec++;
+        }
+        aa.remove(selec);
+        return String.join(" ", aa);
+
+    }
+
+    //串联所有单词的子串
+    //给定一个字符串 s 和一些 长度相同 的单词 words 。找出 s 中恰好可以由 words 中所有单词串联形成的子串的起始位置。
+    //
+    //注意子串要与 words 中的单词完全匹配，中间不能有其他字符 ，但不需要考虑 words 中单词串联的顺序。
+    //输入：s = "barfoothefoobarman", words = ["foo","bar"]
+    //输出：[0,9]
+    public List<Integer> findSubstring(String s, String[] words) {
+        int wordLen = words[0].length();
+
+        int len = s.length() - wordLen * words.length;
+        List<String> baseList = Arrays.asList(words);
+        List<String> wordList;
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i <= len; i++) {
+            wordList = new ArrayList<>(baseList);
+
+            boolean flag = true;
+            for (int j = 0; j < words.length; j++) {
+
+                if (!flag) {
+                    continue;
+                }
+
+                flag = wordList.remove(s.substring(i + (j * wordLen), i + ((j + 1) * wordLen)));
+            }
+
+            if (flag) {
+                result.add(i);
+            }
+
+        }
+        return result;
+    }
+
+    //32. 最长有效括号
+    //给你一个只包含 '(' 和 ')' 的字符串，找出最长有效（格式正确且连续）括号子串的长度。
+    //输入：s = "(()"
+    //输出：2
+    //解释：最长有效括号子串是 "()"
+    public int longestValidParentheses(String s) {
+        int maxLen = 0;
+        Deque<Integer> stack = new LinkedList<Integer>();
+        stack.push(-1);
+
+        for(int i = 0; i < s.length() ; i++){
+            if(s.charAt(i) == '('){
+                stack.push(i);
+            }else{
+                stack.pop();
+                if(stack.isEmpty()){
+                    stack.push(i);
+                }else{
+                    maxLen = Math.max(maxLen, i- stack.peek());
+                }
+            }
+        }
+
+        return maxLen;
+    }
+
+    //3. 无重复字符的最长子串
+    //给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
+    //示例 1:
+    //
+    //输入: s = "abcabcbb"
+    //输出: 3
+    //解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+    public int lengthOfLongestSubstring(String s) {
+        // 记录字符上一次出现的位置
+        int[] last = new int[128];
+        for(int i = 0; i < 128; i++) {
+            last[i] = -1;
+        }
+        int n = s.length();
+
+        int res = 0;
+        int start = 0; // 窗口开始位置
+        for(int i = 0; i < n; i++) {
+            int index = s.charAt(i);
+            start = Math.max(start, last[index] + 1);
+            res   = Math.max(res, i - start + 1);
+            last[index] = i;
+        }
+
+        return res;
+    }
+
+    //93. 复原 IP 地址
+    //有效 IP 地址 正好由四个整数（每个整数位于 0 到 255 之间组成，且不能含有前导 0），整数之间用 '.' 分隔。
+    //
+    //例如："0.1.2.201" 和 "192.168.1.1" 是 有效 IP 地址，但是 "0.011.255.245"、"192.168.1.312" 和 "192.168@1.1" 是 无效 IP 地址。
+    //给定一个只包含数字的字符串 s ，用以表示一个 IP 地址，返回所有可能的有效 IP 地址，这些地址可以通过在 s 中插入 '.' 来形成。你 不能 重新排序或删除 s 中的任何数字。你可以按 任何 顺序返回答案。
+    //输入：s = "25525511135"
+    //输出：["255.255.11.135","255.255.111.35"]
+    List<String> ret = new ArrayList<>();
+    public List<String> restoreIpAddresses(String s) {
+        LinkedList<String> path = new LinkedList<>();
+        backTrace(0,s,path);
+        return ret;
+    }
+
+    public void backTrace(int startIndex, String s, LinkedList<String> path){
+        if(path.size() > 4) return; // 长度>4剪枝
+        if(startIndex == s.length() && path.size() == 4){
+            ret.add(toResult(path));
+            return;
+        }
+        for(int i = startIndex;i<s.length();i++){
+            String str = s.substring(startIndex,i+1);
+            if(!isValid1(str)) continue;
+            path.offerLast(str);
+            backTrace(i+1,s,path);
+            path.removeLast();
+        }
+    }
+
+    public String toResult(LinkedList<String> path){
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < path.size(); i++){
+            sb.append(path.get(i));
+            if(i != path.size() - 1)
+                sb.append(".");
+        }
+        return sb.toString();
+    }
+
+    public boolean isValid1(String s){
+        if(s.length()==1) return true;
+        if(s.length()>3) return false;
+        if(s.charAt(0) == '0') return false;
+        if(Integer.valueOf(s) > 255) return false;
+        return true;
+    }
+
+
+    //187. 重复的DNA序列
+    //DNA序列 由一系列核苷酸组成，缩写为 'A', 'C', 'G' 和 'T'.。
+    //
+    //例如，"ACGAATTCCG" 是一个 DNA序列 。
+    //在研究 DNA 时，识别 DNA 中的重复序列非常有用。
+    //
+    //给定一个表示 DNA序列 的字符串 s ，返回所有在 DNA 分子中出现不止一次的 长度为 10 的序列(子字符串)。你可以按 任意顺序 返回答案。
+    //输入：s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"
+    //输出：["AAAAACCCCC","CCCCCAAAAA"]
+    public List<String> findRepeatedDnaSequences(String s) {
+        int len = s.length();
+        if (len < 10) return new ArrayList<>();
+        Set<String> res = new HashSet<>();
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 10; i <= len; i++) {
+            String sub = s.substring(i - 10, i);
+            if (map.containsKey(sub)) {
+                res.add(sub);
+            } else {
+                map.put(sub, 1);
+            }
+        }
+        return new ArrayList<>(res);
+    }
+
 
 }

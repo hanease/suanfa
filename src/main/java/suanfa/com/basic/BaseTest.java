@@ -1,5 +1,8 @@
 package suanfa.com.basic;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class BaseTest {
     byte a = 100;
     byte b = -50;
@@ -29,7 +32,6 @@ public class BaseTest {
     static String str;
 
     public static void main(String[] args) {
-
         System.out.println("Bool :" + bool);
         System.out.println("Byte :" + by);
         System.out.println("Character:" + ch);

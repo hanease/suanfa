@@ -21,14 +21,14 @@ public class HiveQLWhere {
         Statement stmt = con.createStatement();
 
         // execute statement
-        Resultset res = stmt.executeQuery("SELECT * FROM employee WHERE salary>30000;");
+        /*Resultset res = stmt.executeQuery("SELECT * FROM employee WHERE salary>30000;");
 
         System.out.println("Result:");
         System.out.println(" ID \t Name \t Salary \t Designation \t Dept ");
 
         while (res.next()) {
             System.out.println(res.getInt(1) + " " + res.getString(2) + " " + res.getDouble(3) + " " + res.getString(4) + " " + res.getString(5));
-        }
+        }*/
         con.close();
     }
 }

@@ -30,7 +30,7 @@ public class Main extends Configured implements Tool{
         // mapper
         TableMapReduceUtil.initTableMapperJob(TableName.valueOf("person"), new Scan(), HBaseReadMapper.class, Text.class, Put.class, job);
         // reducer
-        TableMapReduceUtil.initTable ReducerJob("person1", HBaseWriteReducer.class, job);
+        //TableMapReduceUtil.initTable ReducerJob("person1", HBaseWriteReducer.class, job);
 
         boolean b = job.waitForCompletion(true);
         return b ? 0 : 1;

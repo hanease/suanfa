@@ -22,12 +22,12 @@ public class HiveQLGroupBy {
         Statement stmt = con.createStatement();
 
         // execute statement
-        Resultset res = stmt.executeQuery(“SELECT Dept,count(*) ” + “FROM employee GROUP BY DEPT; ”);
+        //Resultset res = stmt.executeQuery(“SELECT Dept,count(*) ” + “FROM employee GROUP BY DEPT; ”);
         System.out.println(" Dept \t count(*)");
 
-        while (res.next()) {
+        /*while (res.next()) {
             System.out.println(res.getString(1) + " " + res.getInt(2));
-        }
+        }*/
         con.close();
     }
 }

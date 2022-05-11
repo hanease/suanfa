@@ -1,5 +1,5 @@
 package suanfa.com.mapreduce;
-import com.wenbronk.hbase.mapreduce.ReducerClass;
+//import com.wenbronk.hbase.mapreduce.ReducerClass;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -30,7 +30,7 @@ public class JobTest {
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(Text.class);
 
-        TableMapReduceUtil.initTableReducerJob("t_user", ReducerClass.class, job, null, null, null, null, false);
+        //TableMapReduceUtil.initTableReducerJob("t_user", ReducerClass.class, job, null, null, null, null, false);
 
         boolean b = job.waitForCompletion(true);
         if (b) {
@@ -39,5 +39,4 @@ public class JobTest {
 
 
     }
-}
 }

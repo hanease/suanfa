@@ -11,8 +11,8 @@ import java.io.IOException;
 
 public class HbaseReducer extends TableReducer<Text, Text, ImmutableBytesWritable> {
 
-    @Override
-　　protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+    /*@Override
+    protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 　　　　String k = key.toString();
 　　　　StringBuilder sb = new StringBuilder();
 　　　　for (Text value : values) {
@@ -24,6 +24,6 @@ public class HbaseReducer extends TableReducer<Text, Text, ImmutableBytesWritabl
 　　　　// rowkey
 　　　　Put put = new Put(k.getBytes());
 　　　　put.addColumn("cf1".getBytes(), "name".getBytes(), sb.toString().getBytes());
-　　}
+　　}*/
 
 }

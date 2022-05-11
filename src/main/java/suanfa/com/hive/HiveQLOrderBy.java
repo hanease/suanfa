@@ -21,12 +21,12 @@ public class HiveQLOrderBy {
         Statement stmt = con.createStatement();
 
         // execute statement
-        Resultset res = stmt.executeQuery("SELECT * FROM employee ORDER BY DEPT;");
+        /*Resultset res = stmt.executeQuery("SELECT * FROM employee ORDER BY DEPT;");
         System.out.println(" ID \t Name \t Salary \t Designation \t Dept ");
 
         while (res.next()) {
             System.out.println(res.getInt(1) + " " + res.getString(2) + " " + res.getDouble(3) + " " + res.getString(4) + " " + res.getString(5));
-        }
+        }*/
 
         con.close();
     }

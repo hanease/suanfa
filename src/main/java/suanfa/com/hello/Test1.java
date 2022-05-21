@@ -3,6 +3,9 @@ package suanfa.com.hello;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Test1 {
     public static void main(String[] args){
@@ -23,6 +26,29 @@ public class Test1 {
             engine.eval(script);
             Invocable inv = (Invocable) engine;
             System.out.println(inv.invokeFunction("hello", "Scripting"));//java调用脚本方法
+
+            List<String> strList = new ArrayList<String>();
+            strList.add("jigang");
+            strList.add("nana");
+            strList.add("jigang");
+            strList.add("jigang");
+            strList.add("nana2");
+
+            System.out.println(strList.size());
+            strList.remove("jigang");
+            System.out.println(strList.size());
+            for (int i=0; i<strList.size(); i++) {
+                if (strList.get(i).equals("jigang")) {
+                    strList.remove(i);
+                    i--;
+                }
+            }
+            Iterator<String> it = strList.iterator();
+            while (it.hasNext()) {
+                System.out.println(it.next());
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
